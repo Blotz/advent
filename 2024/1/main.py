@@ -11,7 +11,7 @@ async def task1():
     sorted_left = []
     sorted_right = []
     
-    async with aiofiles.open('1/input.dat', mode='r') as f:
+    async with aiofiles.open('input.dat', mode='r') as f:
         async for line in f:
             # "1234 5678"
             left, right = line.split(maxsplit=1)
@@ -35,7 +35,7 @@ async def task2():
     list_left = []
     count_right = {}
     
-    async with aiofiles.open('1/input.dat', mode='r') as f:
+    async with aiofiles.open('input.dat', mode='r') as f:
         async for line in f:
             # "1234 5678"
             left, right = line.split(maxsplit=1)
