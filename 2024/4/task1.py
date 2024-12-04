@@ -4,6 +4,9 @@ import regex as re
 import numpy as np
 import time
 
+word = r"XMAS|SAMX"
+word = re.compile(word)
+    
 async def main():
     puzzel = []
     
@@ -53,17 +56,12 @@ async def main():
     
 
 def local_search(array):
-    word = r"XMAS|SAMX"
-    word = re.compile(word)
-    
     if len(array) < 4:
         return 0
 
     line = ''.join(array)
     count = len(re.findall(word, line, overlapped=True))
-    
-    # print(f'{line} {count}')
-    
+
     return count
 
 
