@@ -32,10 +32,7 @@ async def main():
                 fix_ordering(page_ordering_rules, pages)
                 middle = pages[len(pages) // 2]
                 incorrect_order_total += middle
-                
-                
-                
-    
+
     print(total)
     print(incorrect_order_total)
 
