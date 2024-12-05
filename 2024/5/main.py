@@ -13,7 +13,6 @@ async def main():
         async for line in file:
             if line == '\n':
                 break
-            
             # 34|56
             num1, num2 = line.split('|')
             page_ordering_rules[int(num1)][int(num2)] = 1
@@ -27,8 +26,6 @@ async def main():
                 total += middle
             else:
                 # fix the ordering
-                pass
-                # print(pages)
                 fix_ordering(page_ordering_rules, pages)
                 middle = pages[len(pages) // 2]
                 incorrect_order_total += middle
@@ -36,9 +33,9 @@ async def main():
     print(total)
     print(incorrect_order_total)
 
+
 def is_valid_ordering(page_ordering_rules, pages):
     # 75,47,61,53,29
-    
     for idx, page in enumerate(pages):
         # print(page, page_ordering_rules[:, page].nonzero())
         # print(pages[idx])
@@ -46,6 +43,7 @@ def is_valid_ordering(page_ordering_rules, pages):
             if p in pages[idx:]:
                 return False
     return True
+
 
 def fix_ordering(page_ordering_rules, pages):
     # 75,97,47,61,53
@@ -61,8 +59,7 @@ def fix_ordering(page_ordering_rules, pages):
                 if p in pages[idx:]:
                     pages.remove(p)
                     pages.insert(idx, p)
-    
-    
+
 
 if __name__ == '__main__':
     t1 = time.time()
