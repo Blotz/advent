@@ -39,6 +39,10 @@ def is_valid_ordering(page_ordering_rules, pages):
     for idx, page in enumerate(pages):
         # print(page, page_ordering_rules[:, page].nonzero())
         # print(pages[idx])
+        
+        # for each page that needs to come before the current page
+        # if that page is in the list of pages that come after the current page
+        # return False
         for p in page_ordering_rules[:, page].nonzero()[0]:
             if p in pages[idx:]:
                 return False
@@ -55,6 +59,9 @@ def fix_ordering(page_ordering_rules, pages):
     while not is_valid_ordering(page_ordering_rules, pages):
         # sort of insertion sort 
         for idx, page in enumerate(pages):
+            # for each page that needs to come before the current page
+            # if that page is in the list of pages that come after the current page
+            # move it in front of the current page
             for p in page_ordering_rules[:, page].nonzero()[0]:
                 if p in pages[idx:]:
                     pages.remove(p)
