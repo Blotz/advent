@@ -126,7 +126,7 @@ int main() {
     // iterate over visited
     int loops = 0;
     int block_x, block_y;
-    unordered_set<int> directed_visited = unordered_set<int>();
+    int steps;
 
     for (auto it = visited.begin(); it != visited.end(); ++it) {
         // reverse the hash teehee
@@ -136,16 +136,13 @@ int main() {
         x = orig_x;
         y = orig_y;
         d = NORTH;
-
-        directed_visited.clear();
+        steps = 0;
 
         while (true) {
-            // if we have visited this block before, break
-            if (directed_visited.find(simple_hash(x, y, d)) != directed_visited.end()) {
+            if (steps > grid_x*grid_y) {
                 ++loops;
                 break;
             }
-            directed_visited.insert(simple_hash(x, y, d));
 
             next_x = x + dirs[d][1];
             next_y = y + dirs[d][0];
@@ -159,6 +156,7 @@ int main() {
             } else {
                 x = next_x;
                 y = next_y;
+                steps++;
             }
         }
     }
