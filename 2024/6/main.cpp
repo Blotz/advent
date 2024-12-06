@@ -124,8 +124,7 @@ int main() {
     int loops = 0;
     int block_x, block_y;
     int steps;
-    // int max_steps = grid_x*grid_y*4;
-    int max_steps = 10000;  // doesnt need to be x*y*4
+    unordered_set<int> directional_visited = unordered_set<int>();
 
     for (auto it = visited.begin(); it != visited.end(); ++it) {
         // reverse the hash teehee
@@ -135,14 +134,9 @@ int main() {
         x = orig_x;
         y = orig_y;
         d = NORTH;
-        steps = 0;
+        directional_visited.clear();
 
         while (true) {
-            if (steps > max_steps) {
-                ++loops;
-                break;
-            }
-
             next_x = x + dirs[d][1];
             next_y = y + dirs[d][0];
 
@@ -150,8 +144,18 @@ int main() {
                 break;
             } else if (grid[next_y][next_x] == 1) {
                 ++d;
+                if (directional_visited.find(simple_hash(x, y, d)) != directional_visited.end()) {
+                    ++loops;
+                    break;
+                }
+                directional_visited.insert(simple_hash(x, y, d));
             } else if (next_x == block_x && next_y == block_y) {
                 ++d;
+                if (directional_visited.find(simple_hash(x, y, d)) != directional_visited.end()) {
+                    ++loops;
+                    break;
+                }
+                directional_visited.insert(simple_hash(x, y, d));
             } else {
                 x = next_x;
                 y = next_y;
