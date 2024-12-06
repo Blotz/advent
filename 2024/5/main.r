@@ -76,6 +76,8 @@ repeat {
     if(identical(pl, character(0))){break} # If the line is empty, exit.
     # "75,47,61,53,29" -> (75, 47, 61, 53, 29)
     int_vector <- as.integer(unlist(strsplit(pl, ",")))
+
+    # the beans of the problem
     if (is_valid(matrix, int_vector)) {
         # get middle value
         valid_page_total <- valid_page_total + int_vector[ceiling(length(int_vector)/2)]
