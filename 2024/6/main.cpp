@@ -81,9 +81,6 @@ int main() {
             row.push_back(0);
         }
     }
-    if (row.size() > 0) {
-        grid.push_back(row);
-    }
 
     // print grid
     // print_grid(grid, orig_x, orig_y);
@@ -127,6 +124,8 @@ int main() {
     int loops = 0;
     int block_x, block_y;
     int steps;
+    // int max_steps = grid_x*grid_y*4;
+    int max_steps = 10000;  // doesnt need to be x*y*4
 
     for (auto it = visited.begin(); it != visited.end(); ++it) {
         // reverse the hash teehee
@@ -139,7 +138,7 @@ int main() {
         steps = 0;
 
         while (true) {
-            if (steps > grid_x*grid_y) {
+            if (steps > max_steps) {
                 ++loops;
                 break;
             }
