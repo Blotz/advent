@@ -58,6 +58,8 @@ matrix <- matrix(0, nrow = 99, ncol = 99)
 
 f = file("input.txt", "r")
 
+# this will read each line until it reaches an empty line
+# all the lines before the empty line will be used to populate the matrix
 repeat {
     pl = readLines(f, n = 1)
     if(identical(pl, "")){break} # If the line is empty, exit.
@@ -67,6 +69,8 @@ repeat {
 
 valid_page_total <- 0
 invalid_page_total <- 0
+# this continues reading the lines from where the previous loop left off
+# each line is a list of pages
 repeat {
     pl = readLines(f, n = 1)
     if(identical(pl, character(0))){break} # If the line is empty, exit.
