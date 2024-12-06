@@ -81,20 +81,24 @@ async def main():
         directional_previous_position = set()
         
         while True:
-            if (direction, actor[0], actor[1]) in directional_previous_position:
-                causes_loop += 1
-                break
-            else:
-                directional_previous_position.add((direction, actor[0], actor[1]))
-            
             move = dirs[direction]
             next = (actor[0] + move[0], actor[1] + move[1])
             if not is_in_bounds(next, shape):
                 break
             elif puzzle[next[0], next[1]] == 1:
                 direction = direction.next()
+                if (direction, actor[0], actor[1]) in directional_previous_position:
+                    causes_loop += 1
+                    break
+                else:
+                    directional_previous_position.add((direction, actor[0], actor[1]))
             elif next == (idx[0], idx[1]):
                 direction = direction.next()
+                if (direction, actor[0], actor[1]) in directional_previous_position:
+                    causes_loop += 1
+                    break
+                else:
+                    directional_previous_position.add((direction, actor[0], actor[1]))
             else:
                 actor = next
             
