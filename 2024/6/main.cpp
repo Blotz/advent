@@ -144,14 +144,14 @@ int main() {
                 break;
             } else if (grid[next_y][next_x] == 1) {
                 ++d;
-                if (directional_visited.find(simple_hash(x, y, d)) != directional_visited.end()) {
+                if (directional_visited.contains(simple_hash(x, y, d))) {
                     ++loops;
                     break;
                 }
                 directional_visited.insert(simple_hash(x, y, d));
             } else if (next_x == block_x && next_y == block_y) {
                 ++d;
-                if (directional_visited.find(simple_hash(x, y, d)) != directional_visited.end()) {
+                if (directional_visited.contains(simple_hash(x, y, d))) {
                     ++loops;
                     break;
                 }
