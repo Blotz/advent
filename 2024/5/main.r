@@ -1,6 +1,23 @@
-# library(rlist)
+# the matrix contains the relationship between pages.
+# which(matrix[12,]!=0) returns all the pages that 12 comes before.
+# likewise, which(matrix[,34]!=0) returns all the pages that come before 34
+# 
+# using the come-before relatonship, we can check if a page appears before a page that it shouldnt.
+# page <- 12
+# required pages <- (34, 56, 78)
+# if any of the required pages appear after page 12, then the page ordering is invalid
+# 
+# you can quickly fix the ordering using a bubble sort like algorithm
+# for each page, check if any of the required pages appear after the page
+# if they do, move the violating page to just before the current page
+# repeat until the ordering is valid
+# Eventually, the ordering will be valid kinda like a bubble sort
+# 
+# bubble sort is O(n^2) which is better than the O(n!) brute force approach
+
+
 start <- Sys.time()
- 
+
 is_valid <- function(matrix, pages) {
     for (i in seq_along(pages)) {
         current_page <- pages[i]
