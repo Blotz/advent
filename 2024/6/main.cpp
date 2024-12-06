@@ -1,8 +1,7 @@
 #include <iostream>
 #include <fstream>
-#include <chrono>
 #include <unordered_set>
-#include <vector>
+#include <chrono>
 
 using namespace std;
 
@@ -13,7 +12,7 @@ enum Direction {
     WEST
 };
 
-int dirs[4][2] = {
+static int dirs[4][2] = {
     {-1, 0},
     {0, 1},
     {1, 0},
@@ -39,19 +38,10 @@ int simple_hash(int x, int y) {
     // 8 bits for x, 8 bits for y, 8 bits for d
     return (x << 8 | y);
 }
-
-void print_grid(vector<vector<int>> &grid, int orig_x, int orig_y) {
-    for (int i = 0; i < grid.size(); ++i) {
-        for (int j = 0; j < grid[i].size(); ++j) {
-            if (i == orig_y && j == orig_x) {
-                cout << "^";
-            } else if (grid[i][j] == 1) {
-                cout << "#";
-            } else if (grid[i][j] == 2) {
-                cout << "+";
-            } else {
-                cout << ".";
-            }
+void print_grid(char **grid, int grid_x, int grid_y) {
+    for (int i = 0; i < grid_y; ++i) {
+        for (int j = 0; j < grid_x; ++j) {
+            cout << grid[i][j];
         }
         cout << endl;
     }
@@ -60,39 +50,48 @@ void print_grid(vector<vector<int>> &grid, int orig_x, int orig_y) {
 int main() {
     auto start = chrono::high_resolution_clock::now();
 
-    // read input.txt
-    vector<vector<int>> grid;
-    int orig_x, orig_y;
-    // iterate over characters in the file
-    ifstream fin("input.txt", ios::in);
-    vector<int> row = vector<int>();
-    char c;
-    while (fin >> noskipws >> c) {
-        if (c == '\n') {
-            grid.push_back(row);
-            row.clear();
-        } else if (c == '^') {
-            orig_y = grid.size();
-            orig_x = row.size();
-            row.push_back(0);
-        } else if (c == '#') {
-            row.push_back(1);
-        } else {
-            row.push_back(0);
-        }
+    // read file width & height
+    ifstream fin("input.txt");
+    string unused;
+    getline(fin, unused);
+    int grid_x = unused.length();
+    
+    int grid_y = 1;
+    while (getline(fin, unused)) {
+        ++grid_y;
     }
 
-    // print grid
-    // print_grid(grid, orig_x, orig_y);
+    // reset file
+    fin.clear();
+    fin.seekg(0, ios::beg);
+
+    // load data into grid
+    char **grid = new char*[grid_y];
+
+    int orig_x, orig_y;
+    char c;
+
+    for (int i = 0; i < grid_y; ++i) {
+        grid[i] = new char[grid_x];
+        for (int j = 0; j < grid_x; ++j) {
+            fin >> noskipws >> c;
+            if (c == '\n') {
+                fin >> noskipws >> c;
+            }
+            grid[i][j] = c;
+            if (c == '^') {
+                orig_x = j;
+                orig_y = i;
+            }
+        }
+    }
+    // print_grid(grid, grid_x, grid_y);
 
     // follow the path
-    int grid_x = grid.size();
-    int grid_y = grid[0].size();
     Direction d;
     int x, y;
     int next_x, next_y;
     unordered_set<int> visited = unordered_set<int>();
-
     // set initial position
     d = NORTH;
     x = orig_x;
@@ -101,14 +100,12 @@ int main() {
     while (true) {
         visited.insert(simple_hash(x, y));
         
-        // grid[y][x] = 2; // mark as visited
-
         next_x = x + dirs[d][1];
         next_y = y + dirs[d][0];
 
         if (!is_inbounds(next_x, next_y, grid_x, grid_y)) {
             break;
-        } else if (grid[next_y][next_x] == 1) {
+        } else if (grid[next_y][next_x] == '#') {
             ++d;
         } else {
             x = next_x;
@@ -117,8 +114,6 @@ int main() {
     }
     // print places visited
     cout << "Visited: " << visited.size() << endl;
-    // print grid
-    // print_grid(grid, orig_x, orig_y);
 
     // iterate over visited
     int loops = 0;
@@ -142,7 +137,7 @@ int main() {
 
             if (!is_inbounds(next_x, next_y, grid_x, grid_y)) {
                 break;
-            } else if (grid[next_y][next_x] == 1) {
+            } else if (grid[next_y][next_x] == '#') {
                 ++d;
                 if (directional_visited.contains(simple_hash(x, y, d))) {
                     ++loops;
@@ -159,7 +154,7 @@ int main() {
             } else {
                 x = next_x;
                 y = next_y;
-                steps++;
+                ++steps;
             }
         }
     }
@@ -168,6 +163,11 @@ int main() {
     auto end = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<chrono::milliseconds>(end - start);
     cout << "Execution time: " << duration.count() << "ms" << endl;
+
+    for (int i = 0; i < grid_y; ++i) {
+        delete[] grid[i];
+    }
+    delete[] grid;
 
     return 0;
 }
