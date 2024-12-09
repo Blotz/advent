@@ -91,7 +91,7 @@ int main() {
         int n;
         int value;
         
-        fstream fin("input.txt");
+        fstream fin("input.txt", ios::in);
         char c;
         while (fin >> c) {
             n = (int) c - '0';
