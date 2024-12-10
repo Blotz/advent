@@ -23,27 +23,25 @@ def find_sum(target, numbers):
     
     add = n0 + n1
     mul = n0 * n1
-    cat = int(str(n0) + str(n1))
+    # cat = int(str(n0) + str(n1))
     
     # base case.
     if len(numbers) == 0:
         if add == target: return True
         if mul == target: return True
-        if cat == target: return True
+        # if cat == target: return True
 
         return False
     
     # early return if our number is too big (optional)
-    if add > target: return False
-    if mul > target: return False
-    if cat > target: return False
+    if add < target: 
+        if find_sum(target, [add] + numbers): return True
+    if mul < target:
+        if find_sum(target, [mul] + numbers): return True
+    # if cat < target: return find_sum(target, [cat] + numbers)
     
-    # add result to front of list
-    # and call func again
-    return (find_sum(target, [add] + numbers) 
-        or find_sum(target, [mul] + numbers)
-        or find_sum(target, [cat] + numbers))
-
+    return False
+    
 if __name__ == '__main__':
     t1 = time.time()
     asyncio.run(main())
