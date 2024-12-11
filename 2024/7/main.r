@@ -10,23 +10,22 @@ is_valid <- function(result, numbers) {
 
     add <- n1 + n2
     mult <- n1 * n2
+    # cat 
+    cat <- as.numeric(paste0(n1, n2))
+
+    # print(numbers)
+    # print(n1)
+    # print(n2)
+    # print(cat)
 
     if (length(numbers) == 0) {
-        return (result == add | result == mult)
+        return (result == add | result == mult | result == cat)
     }
-
-    if (add < result) { 
-        if (is_valid(result, c(add, numbers))) {
-            return (TRUE)
-        }
-    }
-    if (mult < result) { 
-        if (is_valid(result, c(mult, numbers))) { 
-            return (TRUE)
-        } 
-    }
-
-    return (FALSE)
+     
+    return (is_valid(result, c(add, numbers)) 
+        | is_valid(result, c(mult, numbers)) 
+        | is_valid(result, c(cat, numbers))
+        )
 }
 
 file_path <- "input.txt"
