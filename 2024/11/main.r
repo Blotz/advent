@@ -45,13 +45,16 @@ count_rocks <- function(rock, n) {
 
 file_path <- "input.txt"
 numbers_list <- read_lines(file_path) %>%
-  str_split(" ") %>%                    # Split the line by spaces
-  map(as.integer) %>%                   # Convert to integers
-  map(~ map(.x, ~count_rocks(.x, 75)))  # Process each number
+    str_split(" ") %>%                    # Split the line by spaces
+    unlist() %>%                          # Flatten the list
+    map(as.integer) %>%                   # Convert to integers
+    map(~ count_rocks(.x, 75)) %>%
+    unlist() %>%
+    sum
 
 
 # Print results
-print(paste("Result:", sum(unlist(numbers_list))))
+print(paste("Result:", numbers_list))
 
 t2 <- Sys.time()
 duration <- (t2 - t1) * 1000
