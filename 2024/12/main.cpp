@@ -22,18 +22,12 @@ enum Direction {
     WEST
 };
 
-struct area {
+struct region {
     char type;
     char explored_type;
     int perimeter;
     int area;
     int corners;
-};
-
-struct edge {
-    char type;
-    Direction dir;
-    int turns;
 };
 
 inline int modulo(int a, int b) {
@@ -63,29 +57,30 @@ void print_grid(const grid &puzzle) {
         }
         cout << endl;
     }
+    cout << endl;
 }
 
-void search(int x, int y, grid &puzzle, area &ret) {
+void search(int x, int y, grid &puzzle, region &r) {
     // edge case. we hit the boarder.
     if (!is_inbounds(x, y, puzzle[0].size(), puzzle.size())) {
-        ret.perimeter++; 
+        r.perimeter++; 
         return;
     }
     // previously explored area
-    if (puzzle[y][x] == ret.explored_type) {
+    if (puzzle[y][x] == r.explored_type) {
         return;
     }
     // new area
-    if (puzzle[y][x] != ret.type) {
-        ret.perimeter++; 
+    if (puzzle[y][x] != r.type) {
+        r.perimeter++; 
         return;
     }
 
-    ret.area++;
+    r.area++;
     // overwrite explored areas to stop re exploring
-    puzzle[y][x] = ret.explored_type;
+    puzzle[y][x] = r.explored_type;
 
-    // really i could try count of area corners here too
+    // terrible code. i dont care anymore
     // inner corner
     // #.
     // .x
@@ -103,79 +98,38 @@ void search(int x, int y, grid &puzzle, area &ret) {
         // logic
         bool l_free = (
             is_inbounds(l_x, l_y, puzzle[0].size(), puzzle.size()) 
-            && (puzzle[l_y][l_x] == ret.type || puzzle[l_y][l_x] == ret.explored_type));
+            && (puzzle[l_y][l_x] == r.type || puzzle[l_y][l_x] == r.explored_type));
         bool f_free = (
             is_inbounds(f_x, f_y, puzzle[0].size(), puzzle.size()) 
-            && (puzzle[f_y][f_x] == ret.type || puzzle[f_y][f_x] == ret.explored_type));
+            && (puzzle[f_y][f_x] == r.type || puzzle[f_y][f_x] == r.explored_type));
         bool c_free = (
             is_inbounds(c_x, c_y, puzzle[0].size(), puzzle.size()) 
-            && (puzzle[c_y][c_x] == ret.type || puzzle[c_y][c_x] == ret.explored_type));
+            && (puzzle[c_y][c_x] == r.type || puzzle[c_y][c_x] == r.explored_type));
         
         if (!c_free && f_free && l_free) {
-            ret.corners++;
+            r.corners++;
         }
         if (!f_free && !l_free) {
-            ret.corners++;
+            r.corners++;
         }
     }
+    // terrible code finished
 
     for (int i = 0; i < 4; i++) {
-        search(x + direction[i][1], y + direction[i][0], puzzle, ret);
+        search(x + direction[i][1], y + direction[i][0], puzzle, r);
     }
 }
 
-area explore(int x, int y, grid &puzzle) {
-    area a{};
-    a.type = puzzle[y][x];
-    a.explored_type = a.type + 32;  // lowercase
-    a.area = 0;
-    a.perimeter = 0;
-    a.corners = 0;
+region explore(int x, int y, grid &puzzle) {
+    region r{};
+    r.type = puzzle[y][x];
+    r.explored_type = r.type + 32;  // lowercase
+    r.area = 0;
+    r.perimeter = 0;
+    r.corners = 0;
 
-    search(x, y, puzzle, a);
-    return a;
-}
-
-int follow_edge(int x, int y, grid &puzzle) {
-    char type = puzzle[y][x];
-    int turns = 0;
-    Direction d = EAST;
-    int _x = x;
-    int _y = y;
-    int max_x = puzzle[0].size();
-    int max_y = puzzle.size();
-
-    while (turns < 4 || !(_x == x && _y == y && d == EAST)) {
-        // cout << _x << " " << _y << " " << d << endl;
-        int forward_x = _x + direction[d][1];
-        int forward_y = _y + direction[d][0];
-
-        int corner_dx = _x + direction[modulo(d-1, 4)][1] + direction[d][1];
-        int corner_dy = _y + direction[modulo(d-1, 4)][0] + direction[d][0];
-
-        // logic
-        bool forward_free = is_inbounds(forward_x, forward_y, max_x, max_y) && puzzle[forward_y][forward_x] == type;
-        bool corner_free = is_inbounds(corner_dx, corner_dy, max_x, max_y) && puzzle[corner_dy][corner_dx] == type;
-        if (corner_free && forward_free) {
-            _x = corner_dx;
-            _y = corner_dy;
-            --d;
-            turns++;
-            continue;
-        }
-
-        if (forward_free) {
-            _x = forward_x;
-            _y = forward_y;
-            continue;
-        }
-        // else turn right
-        ++d;
-        turns++;
-
-    };
-
-    return turns;
+    search(x, y, puzzle, r);
+    return r;
 }
 
 int main() {
@@ -194,17 +148,11 @@ int main() {
         fin.close();
     }
 
-    // print
+    // testing
     // print_grid(puzzle);
-    // cout << endl;
+    // area a = explore(0, 0, puzzle);
+    // int turns = follow_edge(0, 0, puzzle);
 
-    // int x = 0;
-    // int y = 0;
-
-    // area a = explore(x, y, puzzle);
-    // int turns = follow_edge(x, y, puzzle);
-
-    // cout << "type: " << a.type << " area: " << a.area << " perimeter: " << a.perimeter << " turns: " << turns << endl;
     print_grid(puzzle);
 
     int total_task1 = 0;
@@ -214,15 +162,11 @@ int main() {
             // lowercase
             if (puzzle[y][x] >= 97) { continue; }
 
-            area a = explore(x, y, puzzle);
-            // Stupid code doesnt work because of edge case
-            // where an area is completely surrounded by another area
-            // int turns = follow_edge(x, y, puzzle);
+            region r = explore(x, y, puzzle);
+            cout << "type: " << r.type << " area: " << r.area << " perimeter: " << r.perimeter << " turns: " << r.corners << endl;
 
-            cout << "type: " << a.type << " area: " << a.area << " perimeter: " << a.perimeter << " turns: " << a.corners << endl;
-
-            total_task1 += a.perimeter*a.area;
-            total_task2 += a.area * a.corners;
+            total_task1 += r.area * r.perimeter;
+            total_task2 += r.area * r.corners;
         }
     }
     
