@@ -1,3 +1,9 @@
+# USER STUFF
+input.txt
+test_input.txt
+test.txt
+edge.txt
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -196,9 +202,7 @@ cython_debug/
 *.app
 
 .vscode/
-input.txt
-test_input.txt
-test.txt
+
 # History files
 .Rhistory
 .Rapp.history
